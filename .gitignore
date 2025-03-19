@@ -1,3 +1,19 @@
+### ArchLinuxPackages ###
+*.tar
+*.tar.*
+*.jar
+*.exe
+*.msi
+*.zip
+*.tgz
+*.log
+*.log.*
+*.sig
+
+pkg/
+src/
+
+### Linux ###
 *~
 
 # temporary files which can be created if a process still has a handle open of a deleted file
@@ -12,26 +28,21 @@
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
 
+### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-*.code-workspace
+!.vscode/*.code-snippets
 
 # Local History for Visual Studio Code
 .history/
 
-*.tar
-*.tar.*
-*.jar
-*.exe
-*.msi
-*.zip
-*.tgz
-*.log
-*.log.*
-*.sig
+# Built Visual Studio Code Extensions
+*.vsix
 
-pkg/
-src/
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.ionide

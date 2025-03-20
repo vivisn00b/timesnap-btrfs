@@ -1,6 +1,5 @@
 #! /usr/bin/env bash
 #
-# Written by: Vivek
 # Github: https://github.com/vivisn00b/timesnap-btrfs
 #
 # Purpose:
@@ -23,7 +22,7 @@
 #
 # Customization:
 #  You have the possibility to modify many parameters in /etc/default/timesnap-grub-btrfs/config.
-#  Read more here  
+#  Read more here ______________________________________
 #  and in the manpage 'man timesnap-grub-btrfs'
 #
 # Automatically update Grub

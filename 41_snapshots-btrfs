@@ -1,34 +1,34 @@
 #! /usr/bin/env bash
 #
 # Written by: Vivek
-# Github: https://github.com/vivisn00b/timesnap
+# Github: https://github.com/vivisn00b/timesnap-btrfs
 #
 # Purpose:
 #   Improves Grub by adding "btrfs snapshots" to the Grub menu.
 #   You can boot your system on a "snapshot" from the Grub menu.
 #   Supports manual snapshots, snapper, timeshift ...
 #   Warning : booting on read-only snapshots can be tricky.
-#   (Read about it, https://github.com/vivisn00b/timesnap#warning-booting-on-read-only-snapshots-can-be-tricky)
+#   (Read about it, ___________________________________)
 #
 # What this script does:
 # - Automatically List snapshots existing on root partition (btrfs).
 # - Automatically Detect if "/boot" is in separate partition.
 # - Automatically Detect kernel, initramfs and intel/amd microcode in "/boot" directory on snapshots.
 # - Automatically Create corresponding "menuentry" in grub.cfg.
-# - Automatically detect the type/tags and descriptions/comments of snapper/timeshift snapshots.
+# - Automatically detect the type/tags and descriptions/comments of timeshift snapshots.
 # - Automatically generate grub.cfg if you use the provided systemd service.
 #
 # Installation:
-# - Refer to https://github.com/vivisn00b/timesnap?tab=readme-ov-file#%EF%B8%8F-installation
+# - Refer to _____________________________________
 #
 # Customization:
 #  You have the possibility to modify many parameters in /etc/default/timesnap-grub-btrfs/config.
-#  Read more here https://github.com/vivisn00b/timesnap?tab=readme-ov-file#customization-of-the-grub-btrfsd-daemon 
+#  Read more here  
 #  and in the manpage 'man timesnap-grub-btrfs'
 #
 # Automatically update Grub
 #  If you would like timesnap-grub-btrfs menu to automatically update when a snapshot is created or deleted:
-#  - Refer to https://github.com/vivisn00b/timesnap?tab=readme-ov-file#-automatically-update-grub-upon-snapshot-creation-or-deletion
+#  - Refer to _____________________________________
 #
 
 set -e

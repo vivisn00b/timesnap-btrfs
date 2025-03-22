@@ -2,32 +2,37 @@
 #
 # Github: https://github.com/vivisn00b/timesnap-btrfs
 #
+# Program:
+#   timesnap-btrfs
+#
 # Purpose:
-#   Improves Grub by adding "btrfs snapshots" to the Grub menu.
-#   You can boot your system on a "snapshot" from the Grub menu.
-#   Supports manual snapshots, snapper, timeshift ...
-#   Warning : booting on read-only snapshots can be tricky.
-#   (Read about it, ___________________________________)
+#   This script enhances GRUB by integrating Btrfs snapshots into the GRUB menu.
+#   It allows booting directly into Btrfs snapshots from the GRUB menu.
+#   Supports snapshots created by Timeshift.
+#   Note: Booting from read-only snapshots may require additional steps.
 #
 # What this script does:
-# - Automatically List snapshots existing on root partition (btrfs).
-# - Automatically Detect if "/boot" is in separate partition.
-# - Automatically Detect kernel, initramfs and intel/amd microcode in "/boot" directory on snapshots.
-# - Automatically Create corresponding "menuentry" in grub.cfg.
-# - Automatically detect the type/tags and descriptions/comments of timeshift snapshots.
-# - Automatically generate grub.cfg if you use the provided systemd service.
+#   - Automatically List snapshots existing on root partition (btrfs).
+#   - Automatically Detect if "/boot" is in separate partition.
+#   - Automatically Detect kernel, initramfs and intel/amd microcode in "/boot" directory on snapshots.
+#   - Automatically Create corresponding "menuentry" in grub.cfg.
+#   - Automatically detect the type/tags and descriptions/comments of timeshift snapshots.
+#   - Automatically generate grub.cfg if you use the provided systemd service.
 #
-# Installation:
-# - Refer to _____________________________________
+# Copyright (C) 2025  Vivek Dey
 #
-# Customization:
-#  You have the possibility to modify many parameters in /etc/default/timesnap-grub-btrfs/config.
-#  Read more here ______________________________________
-#  and in the manpage 'man timesnap-grub-btrfs'
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# Automatically update Grub
-#  If you would like timesnap-grub-btrfs menu to automatically update when a snapshot is created or deleted:
-#  - Refer to _____________________________________
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
 set -e

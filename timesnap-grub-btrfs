@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 #
-# timesnap-grub-btrfs is a daemon that watches the snapshot directory and 
-# updates the GRUB menu when new BTRFS snapshots are created.
+# Package:
+#   timesnap-btrfs
+#
+# Purpose:
+#   The script provides daemon functionality for monitoring BTRFS snapshot directories.
+#   Ensures that the GRUB boot menu is always up to date.
+#   It detects changes in Timeshift snapshots and automatically regenerates the GRUB configuration.
 #
 # Copyright (C) 2025  Vivek Dey
 #

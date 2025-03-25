@@ -5,6 +5,9 @@
 # Program:
 #   timesnap-btrfs
 #
+# Required by:
+#   timesnap-grub-btrfs
+#
 # Purpose:
 #   This script enhances GRUB by integrating Btrfs snapshots into the GRUB menu.
 #   It allows booting directly into Btrfs snapshots from the GRUB menu.
@@ -12,10 +15,10 @@
 #   Note: Booting from read-only snapshots may require additional steps.
 #
 # What this script does:
-#   - Automatically List snapshots existing on root partition (btrfs).
-#   - Automatically Detect if "/boot" is in separate partition.
-#   - Automatically Detect kernel, initramfs and intel/amd microcode in "/boot" directory on snapshots.
-#   - Automatically Create corresponding "menuentry" in grub.cfg.
+#   - Automatically list snapshots existing on root partition (btrfs).
+#   - Automatically detect if "/boot" is in a separate partition.
+#   - Automatically detect kernel, initramfs, and intel/amd microcode in "/boot" directory on snapshots.
+#   - Automatically create corresponding "menuentry" in grub.cfg.
 #   - Automatically detect the type/tags and descriptions/comments of timeshift snapshots.
 #   - Automatically generate grub.cfg if you use the provided systemd service.
 #
@@ -207,7 +210,7 @@ entry()
 ## menu entries
 make_menu_entries()
 {
-## \" required for snap,kernels,init,microcode with space in their name
+## \" required for snap, kernels, init, microcode with space in their name
     entry "submenu '${title_menu}' {
     submenu '${title_submenu}' { echo }"
     for k in "${name_kernel[@]}"; do
@@ -524,16 +527,16 @@ header_menu()
             [[ ${TIMESNAP_GRUB_BTRFS_TITLE_FORMAT[$key],,} != "${title_column[${TIMESNAP_GRUB_BTRFS_TITLE_FORMAT[$key]}],,}" ]] && continue; # User used wrong parameter
             declare -n var="snap_${TIMESNAP_GRUB_BTRFS_TITLE_FORMAT[$key],,}" # $var is a indirect variable
             # Center alignment, needed for pretty formatting
-            local lenght_title_column_left=$((${#var}-${#title_column[${TIMESNAP_GRUB_BTRFS_TITLE_FORMAT[$key],,}]}))
-            ((lenght_title_column_left%2)) && lenght_title_column_left=$((lenght_title_column_left+1));  # If the difference is an odd number, add an extra space
-            lenght_title_column_left=$((((lenght_title_column_left/2)+${#title_column[${TIMESNAP_GRUB_BTRFS_TITLE_FORMAT[$key],,}]})));
-            local lenght_title_column_right=$(((${#var}-lenght_title_column_left)+1)) #+1 is necessary for extra "|" character
-            header_entry+=$(printf "%${lenght_title_column_left}s%${lenght_title_column_right}s" "${title_column[${TIMESNAP_GRUB_BTRFS_TITLE_FORMAT[$key],,}]}" "|") # Final "|" is for visuals only
+            local length_title_column_left=$((${#var}-${#title_column[${TIMESNAP_GRUB_BTRFS_TITLE_FORMAT[$key],,}]}))
+            ((length_title_column_left%2)) && length_title_column_left=$((length_title_column_left+1));  # If the difference is an odd number, add an extra space
+            length_title_column_left=$((((length_title_column_left/2)+${#title_column[${TIMESNAP_GRUB_BTRFS_TITLE_FORMAT[$key],,}]})));
+            local length_title_column_right=$(((${#var}-length_title_column_left)+1)) #+1 is necessary for extra "|" character
+            header_entry+=$(printf "%${length_title_column_left}s%${length_title_column_right}s" "${title_column[${TIMESNAP_GRUB_BTRFS_TITLE_FORMAT[$key],,}]}" "|") # Final "|" is for visuals only
         done
     sed -i "1imenuentry '|${header_entry}' { echo }" "$timesnap_grub_btrfs_directory/timesnap-grub-btrfs.new" # First "|" is for visuals only
 }
 
-## List of kernels, initramfs and microcode in snapshots
+## List of kernels, initramfs, and microcode in snapshots
 boot_bounded()
 {
     # Initialize menu entries
@@ -604,7 +607,7 @@ true > "$timesnap_grub_btrfs_directory/timesnap-grub-btrfs.new" # Create a "time
 if [ -e "$timesnap_grub_btrfs_directory/timesnap-grub-btrfs.cfg" ]; then
 	mv -f "$timesnap_grub_btrfs_directory/timesnap-grub-btrfs.cfg" "$timesnap_grub_btrfs_directory/timesnap-grub-btrfs.cfg.bkp"
 fi
-# Create mount point then mounting
+# Create a mount point, then mount
 [ ! -d "$timesnap_grub_btrfs_mount_point" ] && mkdir -p "$timesnap_grub_btrfs_mount_point"
 mount -o ro,subvolid=5 /dev/disk/by-uuid/"$root_uuid" "$timesnap_grub_btrfs_mount_point/" > /dev/null
 trap "unmount_timesnap_grub_btrfs_mount_point" EXIT # unmounting mount point on EXIT signal
@@ -624,7 +627,7 @@ submenu '${submenuname}' ${protection_authorized_users}${unrestricted_access_sub
 }
 fi
 EOF
-# Show warn, menuentries exceeds 250 entries
+# Show warning, menuentries exceed 250 entries
 [ $count_warning_menuentries -ge 250 ] && printf "Generated %s total GRUB entries. You might experience issues loading snapshots menu in GRUB.\n" "${count_warning_menuentries}" >&2 ;
 # Show total found snapshots
 if [ "${TIMESNAP_GRUB_BTRFS_SHOW_TOTAL_SNAPSHOTS_FOUND:-"true"}" = "true" ] && [ -n "${count_limit_snap}" ]  && [ "${count_limit_snap}" != "0" ]; then
@@ -644,9 +647,9 @@ else
 if [ -e "$timesnap_grub_btrfs_directory/timesnap-grub-btrfs.cfg.bkp" ]; then
         mv -f "$timesnap_grub_btrfs_directory/timesnap-grub-btrfs.cfg.bkp" "$timesnap_grub_btrfs_directory/timesnap-grub-btrfs.cfg"
 fi
-	print_error "Syntax errors were detected in generated ${timesnap_grub_btrfs_directory}/timesnap-grub-btrfs.new file. The old timesnap-grub-btrfs.cfg file (if present) have been restored."
+	print_error "Syntax errors were detected in generated ${timesnap_grub_btrfs_directory}/timesnap-grub-btrfs.new file. The old timesnap-grub-btrfs.cfg file (if present) has been restored."
 fi
 
-# warn when this script is run but there is no entry in grub.cfg
+# warn when this script is run, but there is no entry in grub.cfg
 grep "snapshots-btrfs" "${grub_directory}/grub.cfg" >/dev/null 2>&1 || printf "\nWARNING: '%s' needs to run at least once to generate the snapshots (sub)menu entry in grub the main menu. \
-After that this script can run alone to generate the snapshot entries.\n\n" "${TIMESNAP_GRUB_BTRFS_MKCONFIG:-grub-mkconfig}" >&2 ;
+After that, this script can run alone to generate the snapshot entries.\n\n" "${TIMESNAP_GRUB_BTRFS_MKCONFIG:-grub-mkconfig}" >&2 ;

@@ -41,7 +41,7 @@
 set -e
 
 sysconfdir="/etc"
-timesnap_grub_btrfs_config="${sysconfdir}/default/timesnap/timesnap-grub-btrfs/config"
+timesnap_grub_btrfs_config="${sysconfdir}/default/timesnap/timesnap-grub-btrfs.conf"
 
 [ -f "$timesnap_grub_btrfs_config" ] && . "$timesnap_grub_btrfs_config"
 [ -f "${sysconfdir}/default/grub" ] && . "${sysconfdir}/default/grub"

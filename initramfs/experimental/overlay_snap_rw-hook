@@ -1,0 +1,35 @@
+run_latehook() {
+    local root_mnt="/new_root"
+    local current_dev=$(resolve_device "$root")  # Resolve the device for blkid (root device)
+    
+    # Check if the device is Btrfs and if it's mounted as read-only
+    if [[ $(blkid "${current_dev}" -s TYPE -o value) = "btrfs" ]] && [[ $(btrfs property get ${root_mnt} ro) != "ro=false" ]]; then
+        
+        # Create temporary directories
+        local lower_dir=$(mktemp -d -p /)  # Directory for the read-only snapshot
+        local ram_dir=$(mktemp -d -p /)    # Temporary directory for upper layer (ram)
+        
+        # Move the current root (read-only) snapshot to the lower directory
+        mount --move ${root_mnt} ${lower_dir}
+        
+        # Mount tmpfs for the upper layer (writable space in RAM)
+        mount -t tmpfs cowspace ${ram_dir}
+        
+        # Create necessary directories for overlayfs
+        mkdir -p ${ram_dir}/upper
+        mkdir -p ${ram_dir}/work
+        
+        # Mount the overlay filesystem with the read-only snapshot as lower layer
+        mount -t overlay -o lowerdir=${lower_dir},upperdir=${ram_dir}/upper,workdir=${ram_dir}/work rootfs ${root_mnt}
+
+        # After the changes are made, merge the changes into the snapshot (root)
+        # This step assumes changes are made to the upper layer and need to be committed to the snapshot.
+        
+        # Create a new snapshot that includes the changes (commit changes back)
+        btrfs snapshot ${lower_dir} ${root_mnt} # This merges the upper and lower layers
+        
+        # Optional: Remove the temporary directories used in the overlay process
+        umount ${root_mnt}
+        rm -rf ${lower_dir} ${ram_dir}
+    fi
+}

@@ -1,0 +1,23 @@
+#!/usr/bin/ash
+# overlay_snap_rw.hook
+# mkinitcpio late hook to remount snapshot read-write
+
+run_latehook() {
+    local root_mnt="/new_root"
+    local current_dev
+
+    current_dev=$(resolve_device "$root")  # resolve device from root var
+
+    if [[ $(blkid "${current_dev}" -s TYPE -o value) == "btrfs" ]]; then
+        if [[ $(btrfs property get "${root_mnt}" ro) != "ro=false" ]]; then
+            echo "[overlay_snap_rw] Snapshot detected, remounting read-write..."
+            mount -o remount,rw "${root_mnt}"
+
+            if [[ $(btrfs property get "${root_mnt}" ro) == "ro=false" ]]; then
+                echo "[overlay_snap_rw] Snapshot successfully remounted as writable."
+            else
+                echo "[overlay_snap_rw] ERROR: Remounting snapshot failed!" >&2
+            fi
+        fi
+    fi
+}

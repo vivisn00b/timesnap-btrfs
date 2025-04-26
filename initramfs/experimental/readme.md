@@ -1,13 +1,13 @@
-# Overlay Snapshot RW Boot (Arch Linux)
+# Snapshot RW Boot (Direct Remount) — Arch Linux
 
-Boot directly into a **specific Btrfs snapshot** and **make permanent changes** to that snapshot, without affecting the original root filesystem.
-
-This system is designed for users who want a clean recovery, rollback, or testing environment on Btrfs, similar to what openSUSE and other snapshot-capable distros offer.
+Boot directly into a specific Btrfs snapshot and remount it read-write for making permanent changes.
+No overlayfs. No tmpfs. Direct snapshot modification.
 
 ---
+
 ## ⚠️ WARNING — Experimental Feature
 
-This setup is **experimental** and should be used **with caution**.  
+This setup is **experimental** and should be used **with caution**.
 Improper use **can permanently modify snapshots** and may **lead to system instability** or **data loss** if mishandled.
 
 You are strongly advised to:
@@ -35,14 +35,14 @@ You are strongly advised to:
 
 2. **Copy the Hook and Install Files**:
    ```bash
-   sudo cp hooks/overlay_snap_rw.hook /usr/lib/initcpio/hooks/
-   sudo cp hooks/overlay_snap_rw.install /usr/lib/initcpio/install/
+   sudo cp hooks/snapshot_rw_boot.hook /usr/lib/initcpio/hooks/
+   sudo cp hooks/snapshot_rw_boot.install /usr/lib/initcpio/install/
    ```
 
 3. **Edit `/etc/mkinitcpio.conf`**:
-   Add `overlay_snap_rw` **after** `filesystems` in the `HOOKS=()` array:
+   Add `snapshot_rw_boot` **after** `filesystems` in the `HOOKS=()` array:
    ```bash
-   HOOKS=(base udev autodetect modconf block filesystems overlay_snap_rw keyboard fsck)
+   HOOKS=(base udev autodetect modconf block filesystems snapshot_rw_boot keyboard fsck)
    ```
 
 4. **Rebuild the initramfs**:
@@ -72,6 +72,14 @@ You are strongly advised to:
 
 During boot, you can check the logs:
 ```bash
-journalctl -b | grep overlay_snap_rw
+journalctl -b | grep snapshot_rw_boot
 ```
 This shows whether the snapshot was detected and whether remounting succeeded.
+
+---
+
+## 👨‍💻 Author
+
+Created to provide a simple, lightweight way of testing and modifying Btrfs snapshots directly from early boot.
+
+Use wisely.

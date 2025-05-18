@@ -1,15 +1,37 @@
 #!/usr/bin/ash
+# This script is intended to be run as a late hook during initramfs execution.
+# It checks if the root filesystem is a read-only Btrfs snapshot and overlays it
+# with a tmpfs-based writable layer using the overlay filesystem.
 
 run_latehook() {
-	local root_mnt="/new_root"
-	local current_dev=$(resolve_device "$root"); # resolve devices for blkid
-	if [[ $(blkid "${current_dev}" -s TYPE -o value) = "btrfs" ]] && [[ $(btrfs property get ${root_mnt} ro) != "ro=false" ]]; then # run only on a read only snapshot
-		local lower_dir=$(mktemp -d -p /)
-		local ram_dir=$(mktemp -d -p /)
-		mount --move ${root_mnt} ${lower_dir} # move new_root to lower_dir
-		mount -t tmpfs cowspace ${ram_dir}  #meuh!!! space, you can't test !
-		mkdir -p ${ram_dir}/upper
-		mkdir -p ${ram_dir}/work
-		mount -t overlay -o lowerdir=${lower_dir},upperdir=${ram_dir}/upper,workdir=${ram_dir}/work rootfs ${root_mnt}
-	fi
+    # Define the default new root mount point
+    local root_mnt="/new_root"
+
+    # Resolve the actual device for the root mount (assumes $root is set by initramfs)
+    local current_dev=$(resolve_device "$root")  # resolve_device is expected to be available in the initramfs environment
+
+    # Check if the resolved device is of Btrfs type and if it's mounted read-only
+    if [[ $(blkid "${current_dev}" -s TYPE -o value) = "btrfs" ]] && [[ $(btrfs property get ${root_mnt} ro) != "ro=false" ]]; then
+        # Proceed only if it's a Btrfs volume and read-only
+
+        # Create a temporary directory to serve as the lower (original) root
+        local lower_dir=$(mktemp -d -p /)
+
+        # Create a temporary directory for the overlay's writable tmpfs layer
+        local ram_dir=$(mktemp -d -p /)
+
+        # Move the current root filesystem to the lower directory
+        mount --move ${root_mnt} ${lower_dir}
+
+        # Mount a tmpfs filesystem to be used for overlay upper and work directories
+        mount -t tmpfs cowspace ${ram_dir}  # Using tmpfs as the COW (Copy-on-Write) space
+
+        # Create upper and work directories inside the tmpfs mount
+        mkdir -p ${ram_dir}/upper
+        mkdir -p ${ram_dir}/work
+
+        # Mount an overlay filesystem to make the root writable (in RAM)
+        mount -t overlay -o lowerdir=${lower_dir},upperdir=${ram_dir}/upper,workdir=${ram_dir}/work rootfs ${root_mnt}
+        # This effectively makes the root filesystem writable without modifying the read-only Btrfs snapshot
+    fi
 }

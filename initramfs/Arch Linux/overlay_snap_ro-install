@@ -1,18 +1,29 @@
 #!/bin/bash
+# This is a custom mkinitcpio hook script used to prepare the initramfs
+# for booting into a read-only Btrfs snapshot overlaid with a writable tmpfs layer.
 
+# The build() function is called at build time when mkinitcpio generates the initramfs.
 build() {
-    add_module btrfs
-    add_module overlay
-    add_binary btrfs
-    add_binary btrfsck
-    add_binary blkid
-    add_runscript
+    add_module btrfs         # Include the Btrfs kernel module for Btrfs support
+    add_module overlay       # Include the overlayfs kernel module for temporary writable overlay
+    add_binary btrfs         # Include the 'btrfs' userspace tool (e.g., for checking snapshot properties)
+    add_binary btrfsck       # Include 'btrfsck' for Btrfs filesystem checking
+    add_binary blkid         # Include 'blkid' for identifying block devices and their filesystem types
+    add_runscript            # Include the accompanying runtime hook script (usually called 'late hook')
 }
 
+# The help() function displays a description of what this hook does
 help() {
     cat <<HELPEOF
-This hook uses overlayfs to boot on a read only snapshot.
+This hook uses overlayfs to boot on a read-only snapshot.
+It overlays a tmpfs writable layer on top of a Btrfs read-only subvolume,
+allowing temporary write access without modifying the original snapshot.
 HELPEOF
 }
 
 # vim: set ft=sh ts=4 sw=4 et:
+# This is a modeline for Vim text editors to enforce:
+# - shell script file type (ft=sh)
+# - tab stop width of 4 spaces (ts=4)
+# - shift width for indentation of 4 spaces (sw=4)
+# - expand tabs into spaces (et)

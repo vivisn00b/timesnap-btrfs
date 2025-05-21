@@ -4,9 +4,11 @@
 #   timesnap-btrfs
 #
 # Purpose:
-#   The script provides daemon functionality for monitoring BTRFS snapshot directories.
-#   Ensures that the GRUB boot menu is always up to date.
-#   It detects changes in Timeshift snapshots and automatically regenerates the GRUB configuration.
+#   This script automates the creation of Timeshift snapshots before system upgrades.
+#   It is intended to be triggered by a Pacman hook during package transactions.
+#   It helps ensure system recoverability in case of upgrade-related failures.
+#   Optionally prunes old snapshots based on configuration to save disk space.
+#   If enabled and grub-btrfs is installed, it updates the GRUB boot menu to reflect new snapshots.
 #
 # Copyright (C) 2025  Vivek Dey
 #

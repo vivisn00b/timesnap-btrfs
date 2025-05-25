@@ -19,8 +19,6 @@ OverlayFS allows you to boot snapshots as **non-persistent, Live CD-like environ
 
 #### 1. Install the Hook
 
-**Manual Installation**
-
 - Copy:
   - `overlay_snap_ro-install` → `/etc/initcpio/install/timesnap-grub-btrfs-overlayfs`
   - `overlay_snap_ro-hook` → `/etc/initcpio/hooks/timesnap-grub-btrfs-overlayfs`

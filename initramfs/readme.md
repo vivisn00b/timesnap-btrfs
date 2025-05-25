@@ -19,22 +19,16 @@ OverlayFS allows you to boot snapshots as **non-persistent, Live CD-like environ
 
 #### 1. Install the Hook
 
-**Option A: Install via `pacman`**
-
-```bash
-sudo pacman -S grub-btrfs
-```
-
-**Option B: Manual Installation**
+**Manual Installation**
 
 - Copy:
-  - `overlay_snap_ro-install` → `/etc/initcpio/install/grub-btrfs-overlayfs`
-  - `overlay_snap_ro-hook` → `/etc/initcpio/hooks/grub-btrfs-overlayfs`
+  - `overlay_snap_ro-install` → `/etc/initcpio/install/timesnap-grub-btrfs-overlayfs`
+  - `overlay_snap_ro-hook` → `/etc/initcpio/hooks/timesnap-grub-btrfs-overlayfs`
 - Rename both files **exactly the same**:
   - Example:
     ```text
-    overlay_snap_ro-install → grub-btrfs-overlayfs
-    overlay_snap_ro-hook → grub-btrfs-overlayfs
+    overlay_snap_ro-install → timesnap-grub-btrfs-overlayfs
+    overlay_snap_ro-hook → timesnap-grub-btrfs-overlayfs
     ```
 
 #### 2. Update `mkinitcpio.conf`
@@ -42,7 +36,7 @@ sudo pacman -S grub-btrfs
 Edit `/etc/mkinitcpio.conf` and append the custom hook:
 
 ```bash
-HOOKS=(base udev autodetect modconf block filesystems keyboard fsck grub-btrfs-overlayfs)
+HOOKS=(base udev autodetect modconf block filesystems keyboard fsck timesnap-grub-btrfs-overlayfs)
 ```
 
 > Make sure the hook name matches the renamed files exactly.
@@ -71,12 +65,12 @@ Dracut users can use kernel parameters to activate OverlayFS:
   rd.live.overlay.overlayfs=1
   ```
 
-#### With `grub-btrfs`:
+#### With `timesnap-grub-btrfs`:
 
 1. Set the kernel parameter:
 
 ```bash
-GRUB_BTRFS_SNAPSHOT_KERNEL_PARAMETERS="rd.live.overlay.overlayfs=1"
+TIMESNAP_GRUB_BTRFS_SNAPSHOT_KERNEL_PARAMETERS="rd.live.overlay.overlayfs=1"
 ```
 
 2. Regenerate the GRUB submenu for snapshots:

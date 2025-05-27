@@ -1,0 +1,35 @@
+[Unit]
+Description=Regenerate grub-btrfs.cfg on snapshot changes
+After=local-fs.target
+
+[Service]
+Type=simple
+Environment="PATH=/sbin:/bin:/usr/sbin:/usr/bin"
+EnvironmentFile=/etc/default/timesnap/timesnap-grub-btrfs.conf
+# Starts the grub-btrfs daemon with optional arguments:
+#
+# Usage:
+#   grub-btrfsd [OPTIONS] SNAPSHOT_DIRS
+#
+# Parameters:
+#   SNAPSHOT_DIRS           One or more snapshot directories to monitor.
+#                           (Ignored if --timeshift-auto is used.)
+#
+# Optional Arguments:
+#   -t, --timeshift-auto    Automatically detect Timeshift snapshot directories.
+#   -o, --timeshift-old     Use compatibility mode for Timeshift versions < 22.06.
+#   -l, --log-file FILE     Write logs to the specified file.
+#   -v, --verbose           Enable verbose logging for detailed output.
+#   -s, --syslog            Send log output to the system journal (syslog).
+#   -h, --help              Display this help message and exit.
+ExecStart=/usr/bin/timesnap-grub-btrfs --syslog --timeshift-auto
+Restart=on-failure
+RestartSec=5s
+ProtectSystem=full
+ProtectHome=yes
+NoNewPrivileges=true
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

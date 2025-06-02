@@ -6,7 +6,6 @@
 # Purpose:
 #   Wrapper script for shorter CLI usage: timesnap-gbd
 #   Place this at: /usr/local/bin/timesnap-gbd
-#   Make sure the main script is executable and the path below is correct
 #
 # Copyright (C) 2025  Vivek Dey
 #
@@ -24,4 +23,11 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-exec /usr/local/bin/timesnap-grub-btrfs "$@"
+TARGET="/usr/local/bin/timesnap-grub-btrfs"
+
+if [[ ! -x "$TARGET" ]]; then
+    echo "Error: Target script $TARGET not found or not executable." >&2
+    exit 1
+fi
+
+"$TARGET" "$@"
